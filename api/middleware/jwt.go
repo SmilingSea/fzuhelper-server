@@ -6,7 +6,10 @@ import (
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/common/utils"
 	"github.com/hertz-contrib/jwt"
+	"github.com/west2-online/fzuhelper-server/api/pack"
+	"github.com/west2-online/fzuhelper-server/pkg/errno"
 	"net/http"
+	"strconv"
 	"time"
 )
 
@@ -21,16 +24,17 @@ func InitJwt() {
 		Realm:            "test zone",
 		SigningAlgorithm: "HS256",
 		Key:              []byte("demo"),
-		Timeout:          time.Hour,
 		MaxRefresh:       time.Hour,
 		TokenLookup:      "header:Authorization, query: token, cookie, jwt",
 		TokenHeadName:    "Bearer",
 		// 登录成功后的响应
 		LoginResponse: func(ctx context.Context, c *app.RequestContext, code int, token string, expire time.Time) {
-			c.JSON(http.StatusOK, utils.H{
-				"code":    code,
-				"token":   token,
-				"message": "success",
+			c.JSON(http.StatusOK, pack.RespWithData{
+				Code: strconv.FormatInt(errno.SuccessCode, 10),
+				Msg:  "Success",
+				Data: map[string]interface{}{
+					"token": token,
+				},
 			})
 		},
 		// 收到登录数据后的处理逻辑
