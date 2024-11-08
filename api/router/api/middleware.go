@@ -31,7 +31,9 @@ func rootMw() []app.HandlerFunc {
 
 func _apiMw() []app.HandlerFunc {
 	// your code...
-	return nil
+	return []app.HandlerFunc{
+		middleware.RateLimit(0.5, 1),
+	}
 }
 
 func _v1Mw() []app.HandlerFunc {
